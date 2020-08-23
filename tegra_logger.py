@@ -75,8 +75,7 @@ def animate(i):
         print("You've reached the end of the file")
         plt.savefig('./figures/power_ram_plot_1_seaborn.png')
         sys.exit(0)
-
-
+        
 if __name__ == "__main__":
     # note interval needs to be equal to --interval 
     f = open("./logs/tegra_stats.log", "r")
