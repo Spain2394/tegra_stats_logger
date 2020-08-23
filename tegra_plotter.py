@@ -34,7 +34,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
 # tegra stats format information found below
 # https://docs.nvidia.com/jetson/archives/l4t-archived/l4t-3231/index.html#page/Tegra%2520Linux%2520Driver%2520Package%2520Development%2520Guide%2FAppendixTegraStats.html%23
 # https://forums.developer.nvidia.com/t/source-for-tegrastats-and-or-info-about-querying-overall-gpu-utilization/43000/2
@@ -95,7 +94,7 @@ def animate(i):
         sys.exit(0)
 
 if __name__ == "__main__":
-    # note interval needs to be equal to --interval 
+    # note tegrastats interval needs to be equal to --interval 
     # global duration
     args = parse_args()
     duration = args.duration
