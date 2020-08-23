@@ -1,7 +1,7 @@
 # tegra_stats_logger
 
 #### Usage
-Run tegrastats:
+Run tegrastats and store results to file:
 ```tegrastats --interval 1 --logfile ./logs/tegra_stats.log```
 
 Next run python script: 
