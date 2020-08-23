@@ -21,10 +21,7 @@ time = []
 ram = []
 index = count()
 duration = 10
-
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
-
-
 
 def parse_args():
     """Parse input arguments."""
@@ -54,7 +51,7 @@ def parse_line(line):
     power_mw_str = re.search("\d\d\d\d",power_str.group(0))
     pwr_mw = int(power_mw_str.group(0))
     return pwr_mw, ram_mb
-    
+
 def animate(i):
     try:
         if i <= duration:
@@ -94,13 +91,13 @@ def animate(i):
         sys.exit(0)
 
 if __name__ == "__main__":
-    # note tegrastats interval needs to be equal to --interval 
-    # global duration
+    
     args = parse_args()
     duration = args.duration
-
     f = open(args.log_path, "r")
     datalines = f.readlines()
+    # make interval larger if you are reading the file too fast
+    # tegra stats default update rate = 1000 ms
     ani = FuncAnimation(fig, animate, interval = 1000)
     plt.tight_layout()
     plt.show()
