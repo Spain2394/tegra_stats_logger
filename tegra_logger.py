@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+
 import numpy as np
 import math 
 import os
@@ -6,18 +7,12 @@ import re
 import time
 import random
 import sys
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from itertools import count
 
-
 plt.style.use('seaborn')
-duration = 10           # seconds 
-line_color = (0,255,0)
-block_color = (255,0,0)
-window_size = (500,500) # may not be needed
 
 pwr = []
 time = []
@@ -26,7 +21,7 @@ index = count()
 
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 
-# parsing info can be found at the link below
+# tegra stats format information found below
 # https://forums.developer.nvidia.com/t/source-for-tegrastats-and-or-info-about-querying-overall-gpu-utilization/43000/2
 def parse_line(line):
     """
@@ -46,31 +41,6 @@ def parse_line(line):
     pwr_mw = int(power_mw_str.group(0))
     return pwr_mw, ram_mb
     
-
-def get_pwr():
-    return pwr
-    
-# def compute_power_W():
-#     """
-#     input: single line
-#     output: list of 
-#     """
-
-#     return power
-
-# def RAM():
-#     #    RAM X/Y (lfb NxZ) 
-#     """
-#     input: single line
-#     output: Ram used in MB as a string
-    
-#     """
-#     return true_gpu_util
-
-# def animage(i):
-#     pwr.append(next(index))
-#     time.append(next(index))
-
 def animate(i):
     try:
         print(datalines[i])
@@ -88,7 +58,6 @@ def animate(i):
         ax1.plot(time, pwr, label='Power (W)') # plot x and y values every time called
         ax2.plot(time, ram, label='Ram (MB)',color='green') # plot x and y values every time called
 
-        
         # ax1.set_title('Power plot')
         # ax1.set_xlabel('Time (s)')
         # ax1.legend(loc='upper left')
@@ -100,9 +69,7 @@ def animate(i):
 
         ax1.figure.canvas.draw()
         ax2.figure.canvas.draw()
-
         plt.tight_layout()
-        # plt.show()
         
     except IndexError as e:
         print("You've reached the end of the file")
@@ -110,27 +77,12 @@ def animate(i):
         sys.exit(0)
 
 
-# gcf get current figure
-# interval 1000 which is one second
-# the animate is going to run every seconds
-
-    
-    #### plot line chart with power as a function of time
-
-
-    #### plot a bar chart showing GPU utilization out of 100
-
-
 if __name__ == "__main__":
-    # usage tegrastats --interval <int> --logfile <out_file>
     # note interval needs to be equal to --interval 
-    ## set your plot style
     f = open("./logs/tegra_stats.log", "r")
     datalines = f.readlines()
-    # time.sleep(0.9)
     ani = FuncAnimation(fig, animate, interval = 1000)
     plt.tight_layout()
     plt.show()
-    print('---------------------')
     f.close()
     
