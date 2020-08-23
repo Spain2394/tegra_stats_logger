@@ -25,8 +25,8 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 # https://forums.developer.nvidia.com/t/source-for-tegrastats-and-or-info-about-querying-overall-gpu-utilization/43000/2
 def parse_line(line):
     """
-    input: single
-    output: power, and gpu utilization
+    input: str line from tegrastats log file
+    output: int power in MB, and memory usage in MB
     """
     # RAM X/Y (lfb NxZ), X is memory in MB, Y is total app memory
     ram_str = re.search("RAM\s\d\d\d\d/\d\d\d\d",line)
@@ -75,7 +75,7 @@ def animate(i):
         print("You've reached the end of the file")
         plt.savefig('./figures/power_ram_plot_1_seaborn.png')
         sys.exit(0)
-        
+
 if __name__ == "__main__":
     # note interval needs to be equal to --interval 
     f = open("./logs/tegra_stats.log", "r")
