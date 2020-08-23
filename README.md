@@ -1,4 +1,4 @@
-# tegra_stats_logger
+# tegra_stats_plotter
 
 #### Usage
 Run tegrastats and store results to file:
