@@ -4,7 +4,7 @@ import numpy as np
 import math 
 import os
 import re
-import time
+import time as clock
 import random
 import sys
 import pandas as pd
@@ -26,8 +26,8 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='tegra_stats_plotter')
-    parser.add_argument("--log_path", help="path to tegra log", type=str, default='./logs/tegra_stats.log')
-    parser.add_argument("--duration", help="Amount of time to plot data", type=int, default=10)
+    parser.add_argument("--log_path", help="path to tegra log", type=str, default='/home/maria/tegra_stats_plotter/logs')
+    parser.add_argument("--duration", help="Amount of time to plot data", type=int, default=None)
     args = parser.parse_args()
     return args
 
@@ -54,7 +54,7 @@ def parse_line(line):
 
 def animate(i):
     try:
-        if i <= duration:
+        if duration is None or i <= duration:
             print(datalines[i])
             power, memory = parse_line(datalines[i])
             print("time = %s sec "% i)
@@ -83,11 +83,12 @@ def animate(i):
             ax2.figure.canvas.draw()
             plt.tight_layout()
         else:
-            plt.savefig('./figures/power_ram_plot_1_seaborn.png')
+            plt.savefig('/home/maria/tegra_stats_plotter/figures/darknet_image_test.png')
             sys.exit(0)
-    except IndexError as e:
+    except (IndexError, KeyboardInterrupt) as e:
         print("You've reached the end of the file")
-        plt.savefig('./figures/power_ram_plot_1_seaborn.png')
+        plt.savefig('/home/maria/tegra_stats_plotter/figures/darknet_image_test.png')
+        clock.sleep(1)
         sys.exit(0)
 
 if __name__ == "__main__":
