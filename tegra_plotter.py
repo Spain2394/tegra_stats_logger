@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from itertools import count
+import argparse
 
 # plt.style.use('fivethirtyeight') # also a good theme
 plt.style.use('seaborn')
@@ -19,8 +20,16 @@ pwr = []
 time = []
 ram = []
 index = count()
-
+duration = 10
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+
+def parse_args():
+    """Parse input arguments."""
+    parser = argparse.ArgumentParser(description='tegra_stats_plotter')
+    parser.add_argument("--log_path", help="path to tegra log", type=str, default='./logs/tegra_stats.log')
+    parser.add_argument("--duration", help="Amount of time to plot data", type=int, default=10)
+    args = parser.parse_args()
+    return args
 
 # tegra stats format information found below
 # https://docs.nvidia.com/jetson/archives/l4t-archived/l4t-3231/index.html#page/Tegra%2520Linux%2520Driver%2520Package%2520Development%2520Guide%2FAppendixTegraStats.html%23
@@ -42,46 +51,53 @@ def parse_line(line):
     power_mw_str = re.search("\d\d\d\d",power_str.group(0))
     pwr_mw = int(power_mw_str.group(0))
     return pwr_mw, ram_mb
-    
+
 def animate(i):
     try:
-        print(datalines[i])
-        power, memory = parse_line(datalines[i])
-        print("time = %s sec "% i)
-        print("power = %s mW "%(power/1000))
-        print("memory = %s MB "% memory)
-        time.append(i)
-        pwr.append(power/1000) # mW to W
-        ram.append(memory)
-    
-        ax1.clear()
-        ax2.clear()
+        if i <= duration:
+            print(datalines[i])
+            power, memory = parse_line(datalines[i])
+            print("time = %s sec "% i)
+            print("power = %s mW "%(power/1000))
+            print("memory = %s MB "% memory)
+            time.append(i)
+            pwr.append(power/1000) # mW to W
+            ram.append(memory)
         
-        ax1.plot(time, pwr, label='Power (W)') # plot x and y values every time called
-        ax2.plot(time, ram, label='Ram (MB)',color='green') # plot x and y values every time called
+            ax1.clear()
+            ax2.clear()
+            
+            ax1.plot(time, pwr, label='Power (W)') # plot x and y values every time called
+            ax2.plot(time, ram, label='Ram (MB)',color='green') # plot x and y values every time called
 
-        # ax1.set_title('Power plot')
-        # ax1.set_xlabel('Time (s)')
-        # ax1.legend(loc='upper left')
-        # ax2.legend(loc='upper left')
-        # ax2.set_title('Memory plot')
-        ax2.set_xlabel('Time (s)')
-        ax1.set_ylabel('Power (W)')
-        ax2.set_ylabel('Memory (MB)')
+            # ax1.set_title('Power plot')
+            # ax1.set_xlabel('Time (s)')
+            # ax1.legend(loc='upper left')
+            # ax2.legend(loc='upper left')
+            # ax2.set_title('Memory plot')
+            ax2.set_xlabel('Time (s)')
+            ax1.set_ylabel('Power (W)')
+            ax2.set_ylabel('Memory (MB)')
 
-        ax1.figure.canvas.draw()
-        ax2.figure.canvas.draw()
-        plt.tight_layout()
-        
+            ax1.figure.canvas.draw()
+            ax2.figure.canvas.draw()
+            plt.tight_layout()
+        else:
+            plt.savefig('./figures/power_ram_plot_1_seaborn.png')
+            sys.exit(0)
     except IndexError as e:
         print("You've reached the end of the file")
         plt.savefig('./figures/power_ram_plot_1_seaborn.png')
         sys.exit(0)
 
 if __name__ == "__main__":
-    # note interval needs to be equal to --interval 
-    f = open("./logs/tegra_stats.log", "r")
+    
+    args = parse_args()
+    duration = args.duration
+    f = open(args.log_path, "r")
     datalines = f.readlines()
+    # make interval larger if you are reading the file too fast
+    # tegra stats default update rate = 1000 ms
     ani = FuncAnimation(fig, animate, interval = 1000)
     plt.tight_layout()
     plt.show()
